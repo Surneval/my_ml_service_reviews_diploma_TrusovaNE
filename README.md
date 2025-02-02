@@ -1,6 +1,6 @@
-# Sentiment Classifier App
+# Sentiment Classifier Agentic based App
 ### Made by Nadezhda Trusova, HSE, MDS-2
-### For the course Large Scale Machine Learning-2
+### Master Thesis Project
 ![IMDB_Logo_2016 svg](https://github.com/user-attachments/assets/7a30f399-9d28-48fc-b694-ece56ce38f09)
 
 
@@ -9,7 +9,7 @@
 - **Model Training Scripts** (using `Hugging Face Transformers`, `PyTorch`, and `PEFT` for LoRA)
 - **MLflow Tracking** for experiment logging
 - **Comet.ml Experiment Tracking** for enhanced experiment visualization and management
-- **FastAPI Service** for model inference
+- **FastAPI Agentic Service** for model inference
 - **Streamlit UI** for user interaction
 
 ## Table of Contents
@@ -42,6 +42,7 @@ This application fine-tunes a DistilBERT model on the IMDB movie reviews dataset
 - **Experiment Tracking:** 
   - **MLflow:** Logs metrics and parameters locally.
   - **Comet.ml:** Provides an interactive dashboard for visualizing metrics, parameters, and artifacts.
+- **Agentic approach** LangChain and AutoGen based agents are implemented
 - **Model Serving:** A FastAPI endpoint for inference.
 - **User Interface:** A Streamlit web app to easily test sentiment predictions.
 
@@ -49,6 +50,7 @@ This application fine-tunes a DistilBERT model on the IMDB movie reviews dataset
 
 ```
 .
+├── Additional_materisls/      # Figures and statistics
 ├── data/                      # Data files (IMDB dataset, train/val splits)
 ├── model/                     # Final trained model files and tokenizer
 ├── outputs/                   # Training checkpoints
@@ -56,11 +58,13 @@ This application fine-tunes a DistilBERT model on the IMDB movie reviews dataset
 │   ├── preprocess_data.py
 │   ├── train.py
 │   ├── train_comet.py         # Script for training with Comet.ml tracking
+│   ├── train_comet_FPFN.py    # Script for getting detailed metrics and FP and FN statistics
 │   ├── mlflow_callback.py
 │   └── utils.py
 ├── service/                   # FastAPI service for model inference
 │   ├── Dockerfile
 │   ├── app.py
+│   ├── agents.py
 │   ├── model_inference.py
 │   └── requirements.txt
 ├── ui/                        # Streamlit UI
@@ -90,19 +94,22 @@ This application fine-tunes a DistilBERT model on the IMDB movie reviews dataset
    cd sentiment-classifier-app
    ```
 
-2. **Create and activate a virtual environment:**
+2. **Add model and data folders from https://disk.yandex.ru/d/x5v5qKFLRKI_Xw:**
+
+
+3. **Create and activate a virtual environment:**
    ```bash
    python3 -m venv my_ml
    source my_ml/bin/activate
    ```
 
-3. **Install the requirements:**
+4. **Install the requirements:**
    ```bash
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-4. **Preprocess the data (optional, if not already done):**
+5. **Preprocess the data (optional, if not already done):**
    ```bash
    python scripts/preprocess_data.py
    ```
@@ -138,7 +145,7 @@ To train (or retrain) the model from scratch:
 
 2. **Run the training script:**
    ```bash
-   python scripts/train.py
+   python scripts/train_comet.py
    ```
    
 This will:
