@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/Nadia/Downloads/my_ml_service/mlruns/0/27e325de378e465480afb86a28dd6447/artifacts
+end_time: 1738526142230
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 27e325de378e465480afb86a28dd6447
+run_name: intelligent-eel-228
+run_uuid: 27e325de378e465480afb86a28dd6447
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738526130434
+status: 3
+tags: []
+user_id: Nadia

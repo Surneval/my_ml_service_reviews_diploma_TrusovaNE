@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/Nadia/Downloads/my_ml_service/mlruns/761895016054670131/56592c95cacd4bcb883d47057e4cc721/artifacts
+end_time: 1733685595217
+entry_point_name: ''
+experiment_id: '761895016054670131'
+lifecycle_stage: active
+run_id: 56592c95cacd4bcb883d47057e4cc721
+run_name: spiffy-frog-712
+run_uuid: 56592c95cacd4bcb883d47057e4cc721
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1733685552510
+status: 4
+tags: []
+user_id: Nadia

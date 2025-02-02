@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/Nadia/Downloads/my_ml_service/mlruns/761895016054670131/5da0d62a3c2746fa81fc7b0eb3f61f2b/artifacts
+end_time: 1733688316146
+entry_point_name: ''
+experiment_id: '761895016054670131'
+lifecycle_stage: active
+run_id: 5da0d62a3c2746fa81fc7b0eb3f61f2b
+run_name: amusing-bear-532
+run_uuid: 5da0d62a3c2746fa81fc7b0eb3f61f2b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1733688278362
+status: 4
+tags: []
+user_id: Nadia

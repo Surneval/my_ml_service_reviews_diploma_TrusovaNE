@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/Nadia/Downloads/my_ml_service/mlruns/0/0ef40b4160f34326a8548e96d7ff0c91/artifacts
+end_time: 1733688342955
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0ef40b4160f34326a8548e96d7ff0c91
+run_name: capable-auk-759
+run_uuid: 0ef40b4160f34326a8548e96d7ff0c91
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1733688342940
+status: 3
+tags: []
+user_id: Nadia
