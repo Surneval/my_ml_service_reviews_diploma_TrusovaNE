@@ -1,202 +1,309 @@
----
-base_model: distilbert-base-uncased
-library_name: peft
----
+# Sentiment Classifier App
+### Made by Nadezhda Trusova, HSE, MDS-2
+### For the course Large Scale Machine Learning-2
+![IMDB_Logo_2016 svg](https://github.com/user-attachments/assets/7a30f399-9d28-48fc-b694-ece56ce38f09)
+
+
+### This repository contains a sentiment analysis web application that classifies IMDB movie reviews as **positive** or **negative**. It includes:
+
+- **Model Training Scripts** (using `Hugging Face Transformers`, `PyTorch`, and `PEFT` for LoRA)
+- **MLflow Tracking** for experiment logging
+- **Comet.ml Experiment Tracking** for enhanced experiment visualization and management
+- **FastAPI Service** for model inference
+- **Streamlit UI** for user interaction
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Setup and Installation](#setup-and-installation)
+  - [Local Setup](#local-setup)
+  - [Using Docker and Docker Compose](#using-docker-and-docker-compose)
+- [Model Training](#model-training)
+- [Experiment Tracking with Comet.ml](#experiment-tracking-with-cometml)
+- [Running the Service](#running-the-service)
+- [Running the UI](#running-the-ui)
+- [Making Predictions](#making-predictions)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+- [UI Screenshots](#ui-screenshots)
+- [Backend Screenshots](#backend-screenshots)
+
+## Overview
+
+This application fine-tunes a DistilBERT model on the IMDB movie reviews dataset for sentiment classification. It applies Low-Rank Adaptation (LoRA) for more efficient training and logs results to MLflow and Comet.ml. The final model is served via a FastAPI backend, and a Streamlit frontend provides a simple UI for user input.
+
+## Features
+
+- **Data Preprocessing:** Clean and split IMDB data into training and validation sets.
+- **Training:** Uses `Hugging Face Transformers` and `PEFT` to fine-tune DistilBERT with LoRA.
+- **Experiment Tracking:** 
+  - **MLflow:** Logs metrics and parameters locally.
+  - **Comet.ml:** Provides an interactive dashboard for visualizing metrics, parameters, and artifacts.
+- **Model Serving:** A FastAPI endpoint for inference.
+- **User Interface:** A Streamlit web app to easily test sentiment predictions.
+
+## Project Structure
+
+```
+.
+├── data/                      # Data files (IMDB dataset, train/val splits)
+├── model/                     # Final trained model files and tokenizer
+├── outputs/                   # Training checkpoints
+├── scripts/                   # Scripts for training, preprocessing, utilities
+│   ├── preprocess_data.py
+│   ├── train.py
+│   ├── train_comet.py         # Script for training with Comet.ml tracking
+│   ├── mlflow_callback.py
+│   └── utils.py
+├── service/                   # FastAPI service for model inference
+│   ├── Dockerfile
+│   ├── app.py
+│   ├── model_inference.py
+│   └── requirements.txt
+├── ui/                        # Streamlit UI
+│   ├── Dockerfile
+│   ├── app.py
+│   └── requirements.txt
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+```
+
+## Prerequisites
+
+- **Python 3.11+**
+- **pip** and **virtualenv** (or `venv`)
+- **Docker & Docker Compose** (if running via containers)
+- **Comet.ml Account** (for experiment tracking integration)
+- Sufficient memory and storage for model training and inference.
+
+## Setup and Installation
+
+### Local Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Surneval/sentiment-classifier-app.git
+   cd sentiment-classifier-app
+   ```
+
+2. **Create and activate a virtual environment:**
+   ```bash
+   python3 -m venv my_ml
+   source my_ml/bin/activate
+   ```
+
+3. **Install the requirements:**
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-# Model Card for Model ID
+4. **Preprocess the data (optional, if not already done):**
+   ```bash
+   python scripts/preprocess_data.py
+   ```
+   This will create `train.csv` and `val.csv` in the `data` directory.
 
-<!-- Provide a quick summary of what the model is/does. -->
+### Using Docker and Docker Compose
 
+1. **Build images without cache (if needed):**
+   ```bash
+   docker-compose build --no-cache
+   ```
+   
+2. **Run services:**
+   ```bash
+   docker-compose up -d
+   ```
+   
+3. **Check services:**
+   ```bash
+   docker-compose ps
+   ```
+   
+This will start both the API service and UI.
 
+## Model Training
 
-## Model Details
+To train (or retrain) the model from scratch:
 
-### Model Description
+1. **Activate your virtual environment:**
+   ```bash
+   source my_ml/bin/activate
+   ```
 
-<!-- Provide a longer summary of what this model is. -->
+2. **Run the training script:**
+   ```bash
+   python scripts/train.py
+   ```
+   
+This will:
+- Preprocess the data (if not done).
+- Train the model and save it to the `model/` directory.
+- Log training metrics to `mlruns/` for MLflow tracking.
 
+## Experiment Tracking with Comet.ml
+
+In addition to MLflow, we have integrated **[Comet.ml](https://www.comet.ml/)** for real-time experiment tracking and improved visualization. Comet.ml provides a comprehensive dashboard to monitor training runs, compare experiments, and track metrics, parameters, and artifacts.
+
+### Configuration
+
+1. **Create `.env` File in `scripts` Folder**
+
+   Inside the `scripts` directory, create a file named `.env`:
+
+   ```bash
+   cd scripts
+   touch .env
+   ```
+
+2. **Populate the `.env` File**
 
-
-- **Developed by:** [More Information Needed]
-- **Funded by [optional]:** [More Information Needed]
-- **Shared by [optional]:** [More Information Needed]
-- **Model type:** [More Information Needed]
-- **Language(s) (NLP):** [More Information Needed]
-- **License:** [More Information Needed]
-- **Finetuned from model [optional]:** [More Information Needed]
-
-### Model Sources [optional]
-
-<!-- Provide the basic links for the model. -->
-
-- **Repository:** [More Information Needed]
-- **Paper [optional]:** [More Information Needed]
-- **Demo [optional]:** [More Information Needed]
-
-## Uses
-
-<!-- Address questions around how the model is intended to be used, including the foreseeable users of the model and those affected by the model. -->
-
-### Direct Use
-
-<!-- This section is for the model use without fine-tuning or plugging into a larger ecosystem/app. -->
-
-[More Information Needed]
-
-### Downstream Use [optional]
-
-<!-- This section is for the model use when fine-tuned for a task, or when plugged into a larger ecosystem/app -->
-
-[More Information Needed]
-
-### Out-of-Scope Use
-
-<!-- This section addresses misuse, malicious use, and uses that the model will not work well for. -->
-
-[More Information Needed]
-
-## Bias, Risks, and Limitations
-
-<!-- This section is meant to convey both technical and sociotechnical limitations. -->
-
-[More Information Needed]
-
-### Recommendations
-
-<!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
-
-Users (both direct and downstream) should be made aware of the risks, biases and limitations of the model. More information needed for further recommendations.
-
-## How to Get Started with the Model
-
-Use the code below to get started with the model.
-
-[More Information Needed]
-
-## Training Details
-
-### Training Data
-
-<!-- This should link to a Dataset Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
-
-[More Information Needed]
-
-### Training Procedure
-
-<!-- This relates heavily to the Technical Specifications. Content here should link to that section when it is relevant to the training procedure. -->
-
-#### Preprocessing [optional]
-
-[More Information Needed]
-
-
-#### Training Hyperparameters
-
-- **Training regime:** [More Information Needed] <!--fp32, fp16 mixed precision, bf16 mixed precision, bf16 non-mixed precision, fp16 non-mixed precision, fp8 mixed precision -->
-
-#### Speeds, Sizes, Times [optional]
-
-<!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
-
-[More Information Needed]
-
-## Evaluation
-
-<!-- This section describes the evaluation protocols and provides the results. -->
-
-### Testing Data, Factors & Metrics
-
-#### Testing Data
-
-<!-- This should link to a Dataset Card if possible. -->
-
-[More Information Needed]
-
-#### Factors
-
-<!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
-
-[More Information Needed]
-
-#### Metrics
-
-<!-- These are the evaluation metrics being used, ideally with a description of why. -->
-
-[More Information Needed]
-
-### Results
-
-[More Information Needed]
-
-#### Summary
-
-
-
-## Model Examination [optional]
-
-<!-- Relevant interpretability work for the model goes here -->
-
-[More Information Needed]
-
-## Environmental Impact
-
-<!-- Total emissions (in grams of CO2eq) and additional considerations, such as electricity usage, go here. Edit the suggested text below accordingly -->
-
-Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
-
-- **Hardware Type:** [More Information Needed]
-- **Hours used:** [More Information Needed]
-- **Cloud Provider:** [More Information Needed]
-- **Compute Region:** [More Information Needed]
-- **Carbon Emitted:** [More Information Needed]
-
-## Technical Specifications [optional]
-
-### Model Architecture and Objective
-
-[More Information Needed]
-
-### Compute Infrastructure
-
-[More Information Needed]
-
-#### Hardware
-
-[More Information Needed]
-
-#### Software
-
-[More Information Needed]
-
-## Citation [optional]
-
-<!-- If there is a paper or blog post introducing the model, the APA and Bibtex information for that should go in this section. -->
-
-**BibTeX:**
-
-[More Information Needed]
-
-**APA:**
-
-[More Information Needed]
-
-## Glossary [optional]
-
-<!-- If relevant, include terms and calculations in this section that can help readers understand the model or model card. -->
-
-[More Information Needed]
-
-## More Information [optional]
-
-[More Information Needed]
-
-## Model Card Authors [optional]
-
-[More Information Needed]
-
-## Model Card Contact
-
-[More Information Needed]
-### Framework versions
-
-- PEFT 0.14.0
+   Open `.env` and add the following (replace the API key and paths with yours):
+
+   ```plaintext
+   COMET_API_KEY=YOUR KEY
+   COMET_WORKSPACE=YOUR WORKSPACE
+   COMET_PROJECT_NAME=general
+   MODEL_DIR=.../my_ml_service/model
+   ```
+
+### Running the Comet-Enabled Training Script
+
+With the `.env` file configured:
+
+1. Activate your virtual environment (if not already):
+   ```bash
+   source ../my_ml/bin/activate
+   ```
+
+2. Run the Comet-enabled training script:
+   ```bash
+   python train_comet.py
+   ```
+
+This script will:
+
+- Load credentials and settings from the `.env` file.
+- Log training metrics, parameters, and artifacts to Comet.ml in real-time.
+- Allow you to monitor runs on your Comet.ml dashboard.
+
+### Viewing Experiments on Comet.ml
+
+<img width="1512" alt="Screenshot 2024-12-17 at 14 58 39" src="https://github.com/user-attachments/assets/596a2084-4237-4f44-98ae-d251b6cf7646" />
+<img width="1512" alt="Screenshot 2024-12-17 at 14 58 15" src="https://github.com/user-attachments/assets/0c344c32-f471-4cda-81d3-83699410f365" />
+<img width="1512" alt="Screenshot 2024-12-17 at 14 57 45" src="https://github.com/user-attachments/assets/ebb12ad2-b6e8-4e62-9bee-040d2039044b" />
+
+
+## Running the Service without Docker
+
+If running locally without Docker:
+
+1. **Activate your virtual environment:**
+   ```bash
+   source my_ml/bin/activate
+   ```
+
+2. **Start the FastAPI service:**
+   ```bash
+   cd service
+   uvicorn app:app --host 0.0.0.0 --port 8000
+   ```
+
+3. Access the API docs at:
+   ```
+   http://localhost:8000/docs
+   ```
+
+## Running the UI
+
+If not using Docker:
+
+1. **Activate the environment:**
+   ```bash
+   source my_ml/bin/activate
+   ```
+
+2. **Run the Streamlit UI:**
+   ```bash
+   cd ui
+   streamlit run app.py
+   ```
+
+3. Access the UI at:
+   ```
+   http://localhost:8501
+   ```
+
+## Making Predictions
+
+- **Via the API**:  
+  Send a POST request to `http://localhost:8000/predict` with JSON:
+  ```json
+  {
+    "review": "This movie was absolutely fantastic!"
+  }
+  ```
+  
+  You’ll receive a response:
+  ```json
+  {
+    "sentiment": "positive"
+  }
+  ```
+
+- **Via the UI**:
+  Open `http://localhost:8501`, enter a review, and click "Predict".
+
+
+## Troubleshooting
+
+- **Large File Issues in Git:**  
+  If you encounter Git LFS or large file issues, ensure you have Git LFS installed and tracking large files.
+
+- **Missing Dependencies:**
+  Run:
+  ```bash
+  pip install -r requirements.txt
+  ```
+  
+- **Docker Errors:**
+  - Ensure Docker Desktop is running.
+  - Check `docker info` to confirm the daemon is active.
+  - Try `docker-compose down` followed by `docker-compose up --build`.
+  - Try to restart Docker `pkill Docker` and then `open /Applications/Docker.app` and then `docker-compose down` followed by `docker-compose up --build`
+  - Modify you Docker Engine the following way:
+  `{
+  "builder": {
+    "gc": {
+      "defaultKeepStorage": "20GB",
+      "enabled": true
+    }
+  },
+  "dns": [
+    "8.8.8.8",
+    "8.8.4.4"
+  ],
+  "experimental": false
+}`
+
+- **Model or Missing Files:**
+  If the model files are missing, rerun `python scripts/train.py` or download the model weights as instructed by the project’s documentation.
+
+## License
+
+This project is released under the [MIT License](LICENSE). You are free to modify and distribute this software as per the license conditions.
+
+## UI Screenshots
+
+![2024-12-11_14-08-51](https://github.com/user-attachments/assets/9709e2b8-d799-49e8-9d11-8e22a25d5941)
+![2024-12-11_14-08-19](https://github.com/user-attachments/assets/8b55cb75-1367-4f86-b052-229ffbd15fd3)
+
+## Backend Screenshots
+
+![2024-12-11_14-10-04](https://github.com/user-attachments/assets/e0aa94fd-f13e-4fc8-89f1-cde2b1ae97bf)
+![2024-12-11_14-10-33](https://github.com/user-attachments/assets/3f6038e0-3a0b-4d90-a963-4709e1a4e356)
